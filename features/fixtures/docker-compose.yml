@@ -1,0 +1,13 @@
+version: '3.4'
+services:
+  bugsnag:
+    build: ../bugsnag
+    ports:
+      - "8080:80"
+  aspnetcore:
+    build: aspnetcore
+    environment:
+      - MAZE_API_KEY
+      - MAZE_ENDPOINT
+    ports:
+      - "8081:80"

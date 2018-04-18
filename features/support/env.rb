@@ -5,7 +5,7 @@
 
 # Scenario hooks
 Before do
-# Runs before every Scenario
+  find_default_docker_compose
 end
 
 After do
@@ -13,5 +13,5 @@ After do
 end
 
 at_exit do
-# Runs when the test run is completed
+  stop_stack
 end
