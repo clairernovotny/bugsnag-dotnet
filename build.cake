@@ -66,6 +66,14 @@ Task("BuildExamples")
     }
   });
 
+Task("MazeRunner")
+  .Does(() => {
+    var mazeRunner = StartProcess("cmd", "/c bundle exec bugsnag-maze-runner");
+    if (mazeRunner != 0) {
+      throw new Exception("maze-runner failed");
+    }
+  });
+
 Task("SetVersion")
   .Does(() => {
     var version = AppVeyor.Environment.Build.Version;
@@ -87,6 +95,7 @@ Task("Default")
 
 Task("Appveyor")
   .IsDependentOn("SetVersion")
+  .IsDependentOn("MazeRunner")
   .IsDependentOn("Pack");
 
 RunTarget(target);
