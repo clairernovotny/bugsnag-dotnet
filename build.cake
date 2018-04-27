@@ -72,7 +72,7 @@ Task("MazeRunner")
     if (bundle != 0) {
       throw new Exception("bundle install failed");
     }
-    var mazeRunner = StartProcess("cmd", "/c bundle exec bugsnag-maze-runner");
+    var mazeRunner = StartProcess("cmd", "/c bundle exec bugsnag-maze-runner --verbose");
     if (mazeRunner != 0) {
       throw new Exception("maze-runner failed");
     }
