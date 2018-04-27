@@ -11,3 +11,7 @@ services:
       - MAZE_ENDPOINT
     ports:
       - "8081:80"
+networks:
+  default:
+    external:
+      name: nat
