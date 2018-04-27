@@ -68,6 +68,10 @@ Task("BuildExamples")
 
 Task("MazeRunner")
   .Does(() => {
+    var bundle = StartProcess("cmd", "/c bundle install");
+    if (bundle != 0) {
+      throw new Exception("bundle install failed");
+    }
     var mazeRunner = StartProcess("cmd", "/c bundle exec bugsnag-maze-runner");
     if (mazeRunner != 0) {
       throw new Exception("maze-runner failed");
