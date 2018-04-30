@@ -11,7 +11,7 @@ When("I start the bugsnag endpoint") do
 end
 
 Given("I have cleared the bugsnag requests") do
-  HTTParty.delete("http://localhost:8080/requests")
+  Bugsnag.clear_requests
 end
 
 Given("the {string} has been started") do |service|
@@ -32,5 +32,5 @@ When("I navigate to the route {string}") do |path|
 end
 
 Then("Bugsnag receives an error payload") do
-  assert_equal 1, HTTParty.get("http://localhost:8080/requests").parsed_response.size
+  assert_equal 1, Bugsnag.requests.size
 end
