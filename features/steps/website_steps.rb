@@ -6,29 +6,23 @@ require "test/unit"
 When("I start the bugsnag endpoint") do
   steps %Q{
     When I set environment variable "MAZE_ENDPOINT" to "http://bugsnag"
-    And I start the service "bugsnag"
+    And the "bugsnag" service has been started
   }
 end
 
 Given("I have cleared the bugsnag requests") do
-  Bugsnag.clear_requests
+  Services.bugsnag.clear_requests
 end
 
-Given("the {string} has been started") do |service|
+Given("the {string} service has been started") do |service|
   start_service service
-end
-
-When("I wait for the app to respond") do
-  Retryable.retryable(tries: :infinite) do
-    HTTParty.get("http://localhost:8081")
+  Retryable.retryable(tries: 10, sleep: 6) do
+    Services.send(service).health_check
   end
 end
 
-When("I navigate to the route {string}") do |path|
-  steps %Q{
-    When I open the URL "http://localhost:8081#{path}"
-    And I wait for 5 seconds
-  }
+When("I cause an {string} exception on {string}") do |exception_type, service|
+  Services.send(service).send(exception_type)
 end
 
 Then("Bugsnag receives an error payload") do

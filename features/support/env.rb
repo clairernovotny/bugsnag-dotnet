@@ -11,15 +11,18 @@
 #
 def container_ip_address_for(container_name)
   container_id = run_docker_compose_command($docker_compose_file, "ps -q #{container_name}").first
+  container_port = run_docker_compose_command($docker_compose_file, "port #{container_name} 80").first[/0.0.0.0:(\d+)/, 1]
   command = [
     "docker",
     "inspect",
     "-f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}'",
     container_id
   ]
-  IO.popen(command) do |io|
+  container_ip = IO.popen(command) do |io|
     io.read.tr("'\n ", "")
   end
+
+  "#{container_ip}:#{container_port}"
 end
 
 # Scenario hooks
@@ -32,5 +35,5 @@ After do
 end
 
 at_exit do
-  stop_stack
+  #stop_stack
 end

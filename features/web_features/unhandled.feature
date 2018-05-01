@@ -6,9 +6,8 @@ Background:
 
 Scenario Outline:
   Given I have cleared the bugsnag requests
-  And the <service> has been started
-  And I wait for the app to respond
-  When I navigate to the route "/unhandled"
+  And the <service> service has been started
+  When I cause an "unhandled" exception on <service>
   Then Bugsnag receives an error payload
 
   Examples:

@@ -28,6 +28,15 @@ namespace Bugsnag.Controllers
     }
   }
 
+  [Route("health_check")]
+  public class HealthCheckController : Controller
+  {
+    [HttpGet]
+    public void Get()
+    {
+    }
+  }
+
   [Route("requests")]
   public class RequestsController : Controller
   {
