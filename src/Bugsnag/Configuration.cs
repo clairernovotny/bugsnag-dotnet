@@ -24,6 +24,7 @@ namespace Bugsnag
       ApiKey = apiKey;
       Endpoint = new Uri(DefaultEndpoint);
       AutoNotify = true;
+      AutoCaptureSessions = true;
       SessionEndpoint = new Uri(DefaultSessionEndpoint);
       SessionTrackingInterval = TimeSpan.FromSeconds(60);
       MetadataFilters = new[] { "password", "Authorization" };

@@ -371,7 +371,7 @@ namespace Bugsnag.ConfigurationSection
 
     private const string autoCaptureSessions = "autoCaptureSessions";
 
-    [ConfigurationProperty(autoCaptureSessions, IsRequired = false, DefaultValue = false)]
+    [ConfigurationProperty(autoCaptureSessions, IsRequired = false, DefaultValue = true)]
     public bool AutoCaptureSessions
     {
       get
