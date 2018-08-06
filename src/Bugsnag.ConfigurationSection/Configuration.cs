@@ -8,12 +8,9 @@ namespace Bugsnag.ConfigurationSection
 {
   public class Configuration : System.Configuration.ConfigurationSection, IConfiguration
   {
-    private static Configuration _configuration = ConfigurationManager.GetSection("bugsnag") as Configuration ?? new Configuration();
-
-    public static Configuration Settings
-    {
-      get { return _configuration; }
-    }
+    public static Configuration Settings { get; }
+      = ConfigurationManager.GetSection("bugsnag") as Configuration
+      ?? new Configuration();
 
     private const string apiKey = "apiKey";
 
