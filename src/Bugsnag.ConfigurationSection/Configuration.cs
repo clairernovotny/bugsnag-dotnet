@@ -274,26 +274,6 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
-    [ConfigurationCollection(typeof(ExtendedIgnoreClass), AddItemName = "class", CollectionType = ConfigurationElementCollectionType.BasicMap)]
-    class ExtendedIgnoreClassCollection : ConfigurationElementCollection
-    {
-      protected override ConfigurationElement CreateNewElement()
-      {
-        return new ExtendedIgnoreClass();
-      }
-
-      protected override object GetElementKey(ConfigurationElement element)
-      {
-        return ((ExtendedIgnoreClass)element).Name;
-      }
-    }
-
-    class ExtendedIgnoreClass : ConfigurationElement
-    {
-      [ConfigurationProperty("name", IsRequired = true)]
-      public string Name => (string)this["name"];
-    }
-
     private const string metadataFilters = "metadataFilters";
 
     [ConfigurationProperty(metadataFilters, IsRequired = false)]
@@ -343,29 +323,6 @@ namespace Bugsnag.ConfigurationSection
         }
 
         return null;
-      }
-    }
-
-    class GlobalMetadataItem : ConfigurationElement
-    {
-      [ConfigurationProperty("key", IsRequired = true)]
-      public string Key { get { return (string)this["key"]; } }
-
-      [ConfigurationProperty("value", IsRequired = true)]
-      public string Value { get { return (string)this["value"]; } }
-    }
-
-    [ConfigurationCollection(typeof(GlobalMetadataItem), AddItemName = "item", CollectionType = ConfigurationElementCollectionType.BasicMap)]
-    class GlobalMetadataCollection : ConfigurationElementCollection
-    {
-      protected override ConfigurationElement CreateNewElement()
-      {
-        return new GlobalMetadataItem();
-      }
-
-      protected override object GetElementKey(ConfigurationElement element)
-      {
-        return ((GlobalMetadataItem)element).Key;
       }
     }
 
