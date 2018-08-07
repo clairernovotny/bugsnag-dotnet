@@ -9,15 +9,14 @@ namespace Bugsnag.ConfigurationSection.Tests
 {
   public class CompleteTests
   {
-    private readonly IConfiguration _testConfiguration;
-
     public CompleteTests()
     {
       ConfigurationFileMap fileMap = new ConfigurationFileMap(".\\Complete.config");
-      _testConfiguration = ConfigurationManager.OpenMappedMachineConfiguration(fileMap).GetSection("bugsnag") as Configuration;
+      var configuration = ConfigurationManager.OpenMappedMachineConfiguration(fileMap).GetSection("bugsnag") as Configuration;
+      TestConfiguration = new ClientConfiguration(configuration);
     }
 
-    private IConfiguration TestConfiguration => _testConfiguration;
+    private IConfiguration TestConfiguration { get; }
 
     [Fact]
     public void ConfigurationIsNotNull()
@@ -40,7 +39,7 @@ namespace Bugsnag.ConfigurationSection.Tests
     [Fact]
     public void EndpointIsSet()
     {
-      Assert.Equal(new Uri("https://www.bugsnag.com"), TestConfiguration.Endpoint);
+      Assert.Equal(new Uri("https://www.bugsnag.com"), TestConfiguration.Endpoints.Notify);
     }
 
     [Fact]
@@ -94,7 +93,7 @@ namespace Bugsnag.ConfigurationSection.Tests
     [Fact]
     public void SessionsEndpointIsSet()
     {
-      Assert.Equal(new Uri("https://www.bugsnag.com"), TestConfiguration.SessionEndpoint);
+      Assert.Equal(new Uri("https://www.bugsnag.com"), TestConfiguration.Endpoints.Sessions);
     }
 
     [Fact]

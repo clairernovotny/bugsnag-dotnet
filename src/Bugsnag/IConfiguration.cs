@@ -4,6 +4,21 @@ using System.Net;
 
 namespace Bugsnag
 {
+  public interface IEndpoints
+  {
+    /// <summary>
+    /// The endpoint that Bugsnag will submit error reports to, this should
+    /// default to https://notify.bugsnag.com
+    /// </summary>
+    Uri Notify { get; }
+
+    /// <summary>
+    /// The endpoint that the Bugsnag client will submit session data to, this
+    /// should default to https://sessions.bugsnag.com
+    /// </summary>
+    Uri Sessions { get; }
+  }
+
   public interface IConfiguration
   {
     /// <summary>
@@ -11,12 +26,6 @@ namespace Bugsnag
     /// API.
     /// </summary>
     string ApiKey { get; }
-
-    /// <summary>
-    /// The endpoint that Bugsnag will submit error reports to, this should default to
-    /// https://notify.bugsnag.com
-    /// </summary>
-    Uri Endpoint { get; }
 
     /// <summary>
     /// Determines if the client will automatically catch unhandled exceptions.
@@ -77,11 +86,6 @@ namespace Bugsnag
     bool AutoCaptureSessions { get; }
 
     /// <summary>
-    /// The endpoint that the Bugsnag client will submit session data to.
-    /// </summary>
-    Uri SessionEndpoint { get; }
-
-    /// <summary>
     /// Used to determine how often to flush session data to Bugsnag.
     /// </summary>
     TimeSpan SessionTrackingInterval { get; }
@@ -96,5 +100,10 @@ namespace Bugsnag
     /// evicted in a FIFO manner.
     /// </summary>
     int MaximumBreadcrumbs { get; }
+
+    /// <summary>
+    /// The endpoints that Bugsnag will use to send error and session data to.
+    /// </summary>
+    IEndpoints Endpoints { get; }
   }
 }

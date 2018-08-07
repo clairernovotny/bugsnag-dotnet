@@ -4,14 +4,12 @@ namespace Bugsnag.ConfigurationSection.Tests
 {
   public class DefaultTests
   {
-    private readonly IConfiguration _testConfiguration;
-
     public DefaultTests()
     {
-      _testConfiguration = Configuration.Settings;
+      TestConfiguration = new ClientConfiguration(Configuration.Instance);
     }
 
-    private IConfiguration TestConfiguration => _testConfiguration;
+    private IConfiguration TestConfiguration { get; }
 
     [Fact]
     public void ConfigurationIsNotNull()
@@ -34,7 +32,7 @@ namespace Bugsnag.ConfigurationSection.Tests
     [Fact]
     public void EndpointIsNotNull()
     {
-      Assert.NotNull(TestConfiguration.Endpoint);
+      Assert.NotNull(TestConfiguration.Endpoints.Notify);
     }
 
     [Fact]
@@ -62,9 +60,9 @@ namespace Bugsnag.ConfigurationSection.Tests
     }
 
     [Fact]
-    public void IgnoreClassesIsEmpty()
+    public void IgnoreClassesIsNull()
     {
-      Assert.Empty(TestConfiguration.IgnoreClasses);
+      Assert.Null(TestConfiguration.IgnoreClasses);
     }
 
     [Fact]
@@ -80,15 +78,15 @@ namespace Bugsnag.ConfigurationSection.Tests
     }
 
     [Fact]
-    public void AutoCaptureSessionsIsFalse()
+    public void AutoCaptureSessionsIsTryue()
     {
-      Assert.False(TestConfiguration.AutoCaptureSessions);
+      Assert.True(TestConfiguration.AutoCaptureSessions);
     }
 
     [Fact]
     public void SessionsEndpointIsNotNull()
     {
-      Assert.NotNull(TestConfiguration.SessionEndpoint);
+      Assert.NotNull(TestConfiguration.Endpoints.Sessions);
     }
 
     [Fact]

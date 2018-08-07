@@ -21,7 +21,9 @@ namespace Bugsnag.Tests
       metadata["test"] = subMetadata;
       var filters = new string[] { "password" };
 
-      var client = new Client(new Configuration("123456") { Endpoint = server.Endpoint, MetadataFilters = filters });
+      var configuration = new Configuration("123456") { MetadataFilters = filters };
+      configuration.SetEndpoints(server.Endpoint, server.Endpoint);
+      var client = new Client(configuration);
 
       client.BeforeNotify(r => {
         r.Event.Metadata["bugsnag"] = metadata;
@@ -61,7 +63,9 @@ namespace Bugsnag.Tests
         metadata["test"] = subMetadata;
         var filters = new string[] { "password" };
 
-        var client = new Client(new Configuration("123456") { Endpoint = server.Endpoint, MetadataFilters = filters });
+        var configuration = new Configuration("123456") { MetadataFilters = filters };
+        configuration.SetEndpoints(server.Endpoint, server.Endpoint);
+        var client = new Bugsnag.Client(configuration);
 
         client.BeforeNotify(r => {
           r.Event.Metadata["bugsnag"] = metadata;

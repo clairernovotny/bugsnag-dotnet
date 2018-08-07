@@ -34,7 +34,7 @@ namespace Bugsnag.AspNet.Core.Tests
       bugsnag.Start();
 
       var builder = new WebHostBuilder()
-        .ConfigureServices(services => services.AddBugsnag(config => { config.ApiKey = "123456"; config.Endpoint = bugsnag.Endpoint; }))
+        .ConfigureServices(services => services.AddBugsnag(config => { config.ApiKey = "123456"; config.SetEndpoints(bugsnag.Endpoint, bugsnag.Endpoint); }))
         .Configure(app => {
           app.UseDeveloperExceptionPage();
           app.Run(context => {

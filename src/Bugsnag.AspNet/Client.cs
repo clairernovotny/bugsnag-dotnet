@@ -27,7 +27,7 @@ namespace Bugsnag.AspNet
           {
             // this is the first time a client has been requested for this
             // request scope, so create one and attach it to the request
-            var requestScopedClient = new Bugsnag.Client(ConfigurationSection.Configuration.Settings);
+            var requestScopedClient = new Bugsnag.Client(new ConfigurationSection.ClientConfiguration(ConfigurationSection.Configuration.Instance));
             HttpContext.Current.Items[HttpContextItemsKey] = requestScopedClient;
             return requestScopedClient;
           }
@@ -39,7 +39,7 @@ namespace Bugsnag.AspNet
           {
             if (_globalClient == null)
             {
-              _globalClient = new Bugsnag.Client(ConfigurationSection.Configuration.Settings);
+              _globalClient = new Bugsnag.Client(new ConfigurationSection.ClientConfiguration(ConfigurationSection.Configuration.Instance));
             }
           }
 

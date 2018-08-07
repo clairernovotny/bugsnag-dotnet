@@ -21,9 +21,9 @@ namespace Bugsnag.Tests
 
       server.Start();
 
-      var sessionTracking = new SessionTracker(new Configuration("123456") {
-        SessionEndpoint = server.Endpoint
-      });
+      var configuration = new Configuration("123456");
+      configuration.SetEndpoints(server.Endpoint, server.Endpoint);
+      var sessionTracking = new SessionTracker(configuration);
 
       sessionTracking.CreateSession();
 
@@ -39,9 +39,9 @@ namespace Bugsnag.Tests
 
       server.Start();
 
-      var sessionTracking = new SessionTracker(new Configuration("123456") {
-        SessionEndpoint = server.Endpoint
-      });
+      var configuration = new Configuration("123456");
+      configuration.SetEndpoints(server.Endpoint, server.Endpoint);
+      var sessionTracking = new SessionTracker(configuration);
 
       sessionTracking.CreateSession();
 

@@ -1,21 +1,18 @@
 using System;
-using System.Linq;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Net;
 
 namespace Bugsnag.ConfigurationSection
 {
-  public class Configuration : System.Configuration.ConfigurationSection, IConfiguration
+  public class Configuration : System.Configuration.ConfigurationSection
   {
-    public static Configuration Settings { get; }
+    public static Configuration Instance { get; }
       = ConfigurationManager.GetSection("bugsnag") as Configuration
       ?? new Configuration();
 
     private const string apiKey = "apiKey";
 
     [ConfigurationProperty(apiKey, IsRequired = true)]
-    public string ApiKey
+    internal string ApiKey
     {
       get
       {
@@ -33,7 +30,7 @@ namespace Bugsnag.ConfigurationSection
     private const string appType = "appType";
 
     [ConfigurationProperty(appType, IsRequired = false)]
-    public string AppType
+    internal string AppType
     {
       get
       {
@@ -51,7 +48,7 @@ namespace Bugsnag.ConfigurationSection
     private const string appVersion = "appVersion";
 
     [ConfigurationProperty(appVersion, IsRequired = false)]
-    public string AppVersion
+    internal string AppVersion
     {
       get
       {
@@ -66,23 +63,18 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
-    private const string endpoint = "endpoint";
+    private const string notify = "notify";
 
-    [ConfigurationProperty(endpoint, IsRequired = false, DefaultValue = Bugsnag.Configuration.DefaultEndpoint)]
-    private string InternalEndpoint
+    [ConfigurationProperty(notify, IsRequired = false, DefaultValue = Bugsnag.Endpoints.DefaultEndpoint)]
+    internal Uri Notify
     {
-      get { return this[endpoint] as string; }
-    }
-
-    public Uri Endpoint
-    {
-      get { return new Uri(InternalEndpoint); }
+      get { return this[notify] as Uri; }
     }
 
     private const string autoNotify = "autoNotify";
 
     [ConfigurationProperty(autoNotify, IsRequired = false, DefaultValue = true)]
-    public bool AutoNotify
+    internal bool AutoNotify
     {
       get
       {
@@ -93,7 +85,7 @@ namespace Bugsnag.ConfigurationSection
     private const string notifyReleaseStages = "notifyReleaseStages";
 
     [ConfigurationProperty(notifyReleaseStages, IsRequired = false)]
-    private string InternalNotifyReleaseStages
+    internal string NotifyReleaseStages
     {
       get
       {
@@ -108,23 +100,10 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
-    public string[] NotifyReleaseStages
-    {
-      get
-      {
-        if (InternalNotifyReleaseStages != null)
-        {
-          return InternalNotifyReleaseStages.Split(',');
-        }
-
-        return null;
-      }
-    }
-
     private const string releaseStage = "releaseStage";
 
     [ConfigurationProperty(releaseStage, IsRequired = false)]
-    public string ReleaseStage
+    internal string ReleaseStage
     {
       get
       {
@@ -142,7 +121,7 @@ namespace Bugsnag.ConfigurationSection
     private const string projectRoots = "projectRoots";
 
     [ConfigurationProperty(projectRoots, IsRequired = false)]
-    private string InternalProjectRoots
+    internal string ProjectRoots
     {
       get
       {
@@ -157,23 +136,10 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
-    public string[] ProjectRoots
-    {
-      get
-      {
-        if (InternalProjectRoots != null)
-        {
-          return InternalProjectRoots.Split(',');
-        }
-
-        return null;
-      }
-    }
-
     private const string projectNamespaces = "projectNamespaces";
 
     [ConfigurationProperty(projectNamespaces, IsRequired = false)]
-    private string InternalProjectNamespaces
+    internal string ProjectNamespaces
     {
       get
       {
@@ -188,92 +154,21 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
-    public string[] ProjectNamespaces
-    {
-      get
-      {
-        if (InternalProjectNamespaces != null)
-        {
-          return InternalProjectNamespaces.Split(',');
-        }
-
-        return null;
-      }
-    }
-
     private const string ignoreClasses = "ignoreClasses";
 
     [ConfigurationProperty(ignoreClasses, IsRequired = false)]
-    private string InternalIgnoreClasses
+    internal ExtendedIgnoreClassCollection IgnoreClasses
     {
       get
       {
-        switch (ElementInformation.Properties[ignoreClasses].ValueOrigin)
-        {
-          case PropertyValueOrigin.Inherited:
-          case PropertyValueOrigin.SetHere:
-            return this[ignoreClasses] as string;
-          default:
-            return null;
-        }
-      }
-    }
-
-    private Type[] _ignoreClasses;
-
-    public Type[] IgnoreClasses
-    {
-      get
-      {
-        if (_ignoreClasses == null)
-        {
-          _ignoreClasses = CompleteIgnoreClasses
-            .Select(t => Type.GetType(t))
-            .Where(c => c != null)
-            .ToArray();
-        }
-
-        return _ignoreClasses;
-      }
-    }
-
-    private IEnumerable<string> CompleteIgnoreClasses
-    {
-      get
-      {
-        if (InternalIgnoreClasses != null)
-        {
-          foreach (var item in InternalIgnoreClasses.Split(','))
-          {
-            yield return item;
-          }
-        }
-
-        if (InternalExtendedIgnoreClasses.Count > 0)
-        {
-          foreach (ExtendedIgnoreClass item in InternalExtendedIgnoreClasses)
-          {
-            yield return item.Name;
-          }
-        }
-      }
-    }
-
-    private const string extendedIgnoreClasses = "assemblyQualifiedIgnoreClasses";
-
-    [ConfigurationProperty(extendedIgnoreClasses, IsRequired = false)]
-    private ExtendedIgnoreClassCollection InternalExtendedIgnoreClasses
-    {
-      get
-      {
-        return (ExtendedIgnoreClassCollection)this[extendedIgnoreClasses];
+        return (ExtendedIgnoreClassCollection)this[ignoreClasses];
       }
     }
 
     private const string metadataFilters = "metadataFilters";
 
     [ConfigurationProperty(metadataFilters, IsRequired = false)]
-    private string InternalMetadataFilters
+    internal string MetadataFilters
     {
       get
       {
@@ -288,44 +183,18 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
-    public string[] MetadataFilters
-    {
-      get
-      {
-        if (InternalMetadataFilters != null)
-        {
-          return InternalMetadataFilters.Split(',');
-        }
-
-        return null;
-      }
-    }
-
     private const string metadata = "metadata";
 
     [ConfigurationProperty(metadata, IsRequired = false)]
-    private GlobalMetadataCollection InternalGlobalMetadata
+    internal GlobalMetadataCollection GlobalMetadata
     {
       get { return (GlobalMetadataCollection)this[metadata]; }
-    }
-
-    public KeyValuePair<string, object>[] GlobalMetadata
-    {
-      get
-      {
-        if (InternalGlobalMetadata.Count > 0)
-        {
-          return InternalGlobalMetadata.Cast<GlobalMetadataItem>().Select(i => new KeyValuePair<string, object>(i.Key, i.Value)).ToArray();
-        }
-
-        return null;
-      }
     }
 
     private const string autoCaptureSessions = "autoCaptureSessions";
 
     [ConfigurationProperty(autoCaptureSessions, IsRequired = false, DefaultValue = true)]
-    public bool AutoCaptureSessions
+    internal bool AutoCaptureSessions
     {
       get
       {
@@ -333,28 +202,18 @@ namespace Bugsnag.ConfigurationSection
       }
     }
 
-    private const string sessionsEndpoint = "sessionsEndpoint";
+    private const string sessions = "sessions";
 
-    [ConfigurationProperty(sessionsEndpoint, IsRequired = false, DefaultValue = Bugsnag.Configuration.DefaultSessionEndpoint)]
-    private string InternalSessionEndpoint
+    [ConfigurationProperty(sessions, IsRequired = false, DefaultValue = Bugsnag.Endpoints.DefaultSessionEndpoint)]
+    internal Uri Sessions
     {
-      get { return this[sessionsEndpoint] as string; }
-    }
-
-    public Uri SessionEndpoint
-    {
-      get { return new Uri(InternalSessionEndpoint); }
-    }
-
-    public TimeSpan SessionTrackingInterval
-    {
-      get { return TimeSpan.FromSeconds(60); }
+      get { return this[sessions] as Uri; }
     }
 
     private const string proxyAddress = "proxyAddress";
 
     [ConfigurationProperty(proxyAddress, IsRequired = false)]
-    private string ProxyAddress
+    internal string ProxyAddress
     {
       get { return this[proxyAddress] as string; }
     }
@@ -362,7 +221,7 @@ namespace Bugsnag.ConfigurationSection
     private const string proxyUsername = "proxyUsername";
 
     [ConfigurationProperty(proxyUsername, IsRequired = false)]
-    private string ProxyUsername
+    internal string ProxyUsername
     {
       get { return this[proxyUsername] as string; }
     }
@@ -370,38 +229,15 @@ namespace Bugsnag.ConfigurationSection
     private const string proxyPassword = "proxyPassword";
 
     [ConfigurationProperty(proxyPassword, IsRequired = false)]
-    private string ProxyPassword
+    internal string ProxyPassword
     {
       get { return this[proxyPassword] as string; }
-    }
-
-    public IWebProxy Proxy
-    {
-      get
-      {
-        try
-        {
-          if (Polyfills.String.IsNullOrWhiteSpace(ProxyAddress)) return null;
-
-          // we should probably store this so we don't try to create a new one each time this is accessed
-          if (!string.IsNullOrEmpty(ProxyUsername) && !string.IsNullOrEmpty(ProxyPassword))
-          {
-            var credential = new NetworkCredential(ProxyUsername, ProxyPassword);
-            return new WebProxy(ProxyAddress, false, null, credential);
-          }
-          return new WebProxy(ProxyAddress);
-        }
-        catch (UriFormatException)
-        {
-          return null;
-        }
-      }
     }
 
     private const string maximumBreadcrumbs = "maximumBreadcrumbs";
 
     [ConfigurationProperty(maximumBreadcrumbs, IsRequired = false, DefaultValue = 25)]
-    public int MaximumBreadcrumbs
+    internal int MaximumBreadcrumbs
     {
       get { return (int)this[maximumBreadcrumbs]; }
     }

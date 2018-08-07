@@ -28,7 +28,11 @@ namespace Bugsnag.AspNet.Core.Tests
       bugsnag.Start();
 
       var builder = new WebHostBuilder()
-        .ConfigureServices(services => services.AddBugsnag(config => { config.ApiKey = "123456"; config.Endpoint = bugsnag.Endpoint; }))
+        .ConfigureServices(services => services.AddBugsnag(config => {
+          config.ApiKey = "123456";
+          config.SetEndpoints(bugsnag.Endpoint, bugsnag.Endpoint);
+          config.AutoCaptureSessions = false;
+        }))
         .Configure(app => {
           app.UseExceptionHandler("/home");
           app.Map("/error", error => {
@@ -49,7 +53,8 @@ namespace Bugsnag.AspNet.Core.Tests
 
       var bugsnags = await bugsnag.Requests(1);
 
-      BugsnagPayload = bugsnags.First();
+      Assert.Single(bugsnags);
+      BugsnagPayload = bugsnags.Single();
     }
 
     /// <summary>

@@ -38,7 +38,7 @@ namespace Bugsnag.Payload
     public Report(IConfiguration configuration, System.Exception exception, HandledState severity, Breadcrumb[] breadcrumbs, Session session)
     {
       _ignored = false;
-      Endpoint = configuration.Endpoint;
+      Endpoint = configuration.Endpoints.Notify;
       Proxy = configuration.Proxy;
       _headers = new KeyValuePair<string, string>[] {
         new KeyValuePair<string, string>(Payload.Headers.ApiKeyHeader, configuration.ApiKey),

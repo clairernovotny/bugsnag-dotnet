@@ -28,7 +28,11 @@ namespace Bugsnag.AspNet.WebApi.Tests
 
       var configuration = new HttpConfiguration();
       configuration.Routes.MapHttpRoute("Default", "api/{controller}");
-      configuration.UseBugsnag(new Configuration("wow") { Endpoint = bugsnagServer.Endpoint });
+      // we turn off auto capture sessions here as we only want to test that we
+      // receive the error payload
+      var bugsnagConfiguration = new Configuration("wow") { AutoCaptureSessions = false };
+      bugsnagConfiguration.SetEndpoints(bugsnagServer.Endpoint, bugsnagServer.Endpoint);
+      configuration.UseBugsnag(bugsnagConfiguration);
       var webApiServer = new HttpServer(configuration);
 
       var client = new HttpClient(webApiServer);

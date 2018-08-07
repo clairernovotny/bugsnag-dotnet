@@ -4,16 +4,33 @@ using System.Net;
 
 namespace Bugsnag
 {
+  public class Endpoints : IEndpoints
+  {
+    public const string DefaultEndpoint = "https://notify.bugsnag.com";
+
+    public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
+
+    internal Endpoints() : this(new Uri(DefaultEndpoint), new Uri(DefaultSessionEndpoint))
+    {
+
+    }
+
+    public Endpoints(Uri notify, Uri sessions)
+    {
+      Notify = notify;
+      Sessions = sessions;
+    }
+
+    public Uri Notify { get; }
+
+    public Uri Sessions { get; }
+  }
   /// <summary>
   /// An in memory implementation of the IConfiguration interface, with default
   /// values populated.
   /// </summary>
   public class Configuration : IConfiguration
   {
-    public const string DefaultEndpoint = "https://notify.bugsnag.com";
-
-    public const string DefaultSessionEndpoint = "https://sessions.bugsnag.com";
-
     public Configuration() : this(string.Empty)
     {
 
@@ -22,19 +39,21 @@ namespace Bugsnag
     public Configuration(string apiKey)
     {
       ApiKey = apiKey;
-      Endpoint = new Uri(DefaultEndpoint);
       AutoNotify = true;
       AutoCaptureSessions = true;
-      SessionEndpoint = new Uri(DefaultSessionEndpoint);
+      Endpoints = new Endpoints();
       SessionTrackingInterval = TimeSpan.FromSeconds(60);
       MetadataFilters = new[] { "password", "Authorization" };
       MaximumBreadcrumbs = 25;
       ReleaseStage = Environment.GetEnvironmentVariable("BUGSNAG_RELEASE_STAGE");
     }
 
-    public string ApiKey { get; set; }
+    public void SetEndpoints(Uri notify, Uri sessions)
+    {
+      Endpoints = new Endpoints(notify, sessions);
+    }
 
-    public Uri Endpoint { get; set; }
+    public string ApiKey { get; set; }
 
     public bool AutoNotify { get; set; }
 
@@ -58,12 +77,12 @@ namespace Bugsnag
 
     public bool AutoCaptureSessions { get; set; }
 
-    public Uri SessionEndpoint { get; set; }
-
     public TimeSpan SessionTrackingInterval { get; set; }
 
     public IWebProxy Proxy { get; set; }
 
     public int MaximumBreadcrumbs { get; set; }
+
+    public IEndpoints Endpoints { get; set; }
   }
 }

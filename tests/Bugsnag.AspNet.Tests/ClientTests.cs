@@ -23,7 +23,9 @@ namespace Bugsnag.AspNet.Tests
 
       server.Start();
 
-      var client = new Bugsnag.Client(new Bugsnag.Configuration("123456") { Endpoint = server.Endpoint });
+      var configuration = new Configuration("123456");
+      configuration.SetEndpoints(server.Endpoint, server.Endpoint);
+      var client = new Bugsnag.Client(configuration);
 
       try
       {

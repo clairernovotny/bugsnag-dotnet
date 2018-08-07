@@ -18,7 +18,7 @@ namespace Bugsnag.Payload
     public BatchedSessions(IConfiguration configuration, NotifierInfo notifier, App app, Device device, IEnumerable<KeyValuePair<string, long>> sessionData)
     {
       _configuration = configuration;
-      Endpoint = configuration.SessionEndpoint;
+      Endpoint = configuration.Endpoints.Sessions;
       Proxy = configuration.Proxy;
       _headers = new KeyValuePair<string, string>[] {
         new KeyValuePair<string, string>(Payload.Headers.ApiKeyHeader, configuration.ApiKey),
